@@ -1,0 +1,43 @@
+<html>
+<!-- <script src="bundle.js"></script>
+<object width="300" height="300" type="text/plain" data="message.txt" border="0" >
+</object> -->
+<script type="text/javascript">
+var primes = {};
+	var primeList = [];
+	var anagramPrimes=[];
+
+	function genPrimes(numPrimes){
+		primes[2] = 1;
+		primes[3] = 1;
+		primes[5] = 1;
+		primeList.push(2);
+		primeList.push(3);
+		primeList.push(5);
+		for(var i = 7; i < numPrimes; i++){
+			var prime = 1;
+			var j = 3;
+			if(i % 2 == 0 || i % 3 == 0 || i % 5 == 0) prime = 0;
+			
+			while(j < primeList.length && prime)
+			{
+				if(i % primeList[j] == 0)prime = 0;
+
+				j++;
+			}
+			if(prime){
+				primeList.push(i);
+				primes[i] = 1;
+				var tempArray = (i+"").split('').sort();
+
+				if(!anagramPrimes[tempArray])anagramPrimes[tempArray]=[];
+				anagramPrimes[tempArray].push(i);
+			}
+		}
+		console.log(primes);
+		console.log(primeList);
+		console.log(anagramPrimes);
+	}
+</script>
+
+</html>
