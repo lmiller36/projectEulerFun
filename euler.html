@@ -3,100 +3,86 @@
 <object width="300" height="300" type="text/plain" data="message.txt" border="0" >
 </object> -->
 <script type="text/javascript">
-	
-	var primes = {};
-	var primeList = [];
-	uniqueFractions(100);
+	var valid = [];
+	genValid(5,"",0,0);
+	var valid30s = 0;
 
 
-	function genPrimes(numPrimes){
-		primes[2] = 1;
-		primes[3] = 1;
-		primes[5] = 1;
-		primeList.push(2);
-		primeList.push(3);
-		primeList.push(5);
-		for(var i = 7; i < numPrimes; i++){
-			var prime = 1;
-			var j = 3;
-			if(i % 2 == 0 || i % 3 == 0 || i % 5 == 0) prime = 0;
+	valid10s = [];
+	for(var a = 0; a < valid.length; a++){
+		var validSched1 = valid[a];
+		for(var b = 0; b < valid.length; b++){
+			var validSched2 = valid[b];
+
+			var noMoreThan2As = validSched1["endingAs"] + validSched2["startingAs"];
+			var totalLates = validSched1["lates"]+validSched2["lates"];
+			if( noMoreThan2As < 3 && totalLates < 2){
+				var properties = {
+					"str":(validSched1["str"]+validSched2["str"]),
+					"lates":totalLates,
+					"startingAs":validSched1["startingAs"],
+					"endingAs":validSched2["endingAs"]
+				};
+
+
+				valid10s.push(properties);
+			}
+		}
+	}
+
+	for(var a = 0; a < valid10s.length;a++){
+		console.log(a);
+		var validSched10_1 = valid10s[a];
+		for(var b = 0; b < valid10s.length;b++){
+			var validSched10_2 = valid10s[b];
+			var noMoreThan2As = validSched10_1["endingAs"] + validSched10_2["startingAs"];
+			var totalLates = validSched10_1["lates"]+validSched10_2["lates"];
+			if(noMoreThan2As <= 3 && totalLates <= 1){
+				for(var c = 0; c < valid10s.length;c++){
+					var validSched10_3 = valid10s[c];
+					var noMoreThan2As_2 = validSched10_2["endingAs"] 
+					+ validSched10_3["startingAs"];
+					var totalLates_2 = totalLates + validSched10_3["lates"];
+					if(noMoreThan2As_2 <= 3 && totalLates_2 <= 1){
+						valid30s ++;
+					}
+				}
+			}
 			
-			while(j < primeList.length && prime)
-			{
-				if(i % primeList[j] == 0)prime = 0;
-				j++;
-			}
-			if(prime){
-				primeList.push(i);
-				primes[i] = 1;
-			}
 		}
 	}
 
-	function uniqueFractions(n){
-		genPrimes(n);
-		var unique = 0;
-		// // console.log(fractionIsReduced(3,4));
-		for(var i = 2;i <= n; i++){
-			// console.log(i+":"+unique);
-			// if(primes[i]) unique += i - 1;
-			// else{
-				for(var j = 1; j < i;j++){
-					// console.log()
-					// if(j == 1)unique++;
-					// else if(primes[j]) unique++;
-					// else if(i % j == 0){}
-					// else{
-						var isReduced = fractionIsReduced(j,i);
-						if(isReduced){
-							unique ++;
-							// console.log(j+"/"+i)
-						} 
-					// }
+	console.log(valid30s);
 
-					// if()
-						// var isReduced = fractionIsReduced(j,i);
-						// if(isReduced) unique ++;
+	function genValid(remaining,seen,lates,AInRow) {
+		if(seen.length >= 3 && seen.substring(seen.length - 3) == "AAA")
+			return;
+		if(lates >= 2) return;
 
-				// console.log(isReduced+":"+j+"/"+i);
-			// }
+		if(remaining == 0){
+			var firstNonA = Math.min(seen.indexOf("O"),seen.indexOf("L"));
+			firstNonA = Math.max(0,firstNonA);
+			var properties = {
+				"str":seen,
+				"lates":lates,
+				"startingAs":firstNonA,
+				"endingAs":AInRow
+			};
+
+
+			valid.push(properties);
+
+		}
+		else{
+			genValid(remaining - 1,seen+"L",lates+1,0);
+			genValid(remaining - 1,seen+"O",lates,0);
+			genValid(remaining - 1,seen+"A",lates,AInRow+1);
 		}
 	}
 
-	console.log(unique);
-}
 
-function fractionIsReduced(num,denom){
-	if(num == 1) return true;	
-	if(denom % num == 0)return false;
-	if(primes[num] || primes[denom]) return true;
 
-	var curr = num;
-	while(curr!=1){
-		var currFactor = getLowestFactor(curr);
-			// console.log(currFactor);
-			if(denom % currFactor == 0) return false;
-			curr = curr / currFactor;
-		}
-
-		return true;
-	}
-
-	function getLowestFactor(n){
-		// console.log(primeList)
-		// console.log(n);
-		var i = 0; 
-		while( i < primeList.length){
-			// console.log(primeList[i]);
-			if(n % primeList[i] == 0) return primeList[i];
-			i++;
-		}
-	}
-
-	//x is always less than y
-	function getHighestCommonFactor(x,y){
-
-	}
+	console.log(valid);
 </script>
 
 </html>
