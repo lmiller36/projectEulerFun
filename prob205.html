@@ -1,0 +1,61 @@
+<html>
+<script type="text/javascript">
+	var fourSidedTotal = {
+		"total":0
+	};
+
+	rollDice(9,4,"",fourSidedTotal);
+	console.log(fourSidedTotal);
+
+	var sixSidedTotal = {
+		"total":0
+	};
+
+	rollDice(6,6,"",sixSidedTotal);
+	console.log(sixSidedTotal);
+
+	var probabilitiesFour = {};
+	var probabilitiesSix = {};
+
+	calculateProbs(fourSidedTotal,9,36,probabilitiesFour);
+	calculateProbs(sixSidedTotal,6,36,probabilitiesSix);
+
+	var probOfFourWinning = 0;
+	var total = 0;
+	for(var i = 9; i <= 36;i++){
+		for(var j = 6; j <= 36; j++){
+			var currProb = probabilitiesFour[i] * probabilitiesSix[j];
+			if(i > j) probOfFourWinning += currProb;
+			total += currProb;
+		}
+	}
+
+	console.log(probOfFourWinning+"/"+total);
+
+	function calculateProbs(occurrences, min, max, probs){
+		var total = occurrences["total"];
+		for(var i = min; i <= max;i++){
+			var probCurr = occurrences[i] / total;
+			probs[i] = probCurr;
+		}
+		return probs;
+	}
+
+
+	function rollDice(numRolls,numSides,curr,totals) {
+		if(numRolls == 0){
+			var sum = curr.split("").reduce((a,b)=>{return parseInt(a) + parseInt(b)});
+			if(!totals[sum]) totals[sum] = 1;
+			else totals[sum] ++;
+			totals["total"]++;
+			return;
+		}
+
+		for(var i = 1;i <= numSides;i++){
+			rollDice(numRolls - 1,numSides,curr+i+"",totals);
+		}
+
+	}
+
+</script>
+</html>
